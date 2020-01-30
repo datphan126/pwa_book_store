@@ -10,11 +10,11 @@ import { Card } from '../birthday-cards/birthday-cards.component';
   styleUrls: ['./birthday-card-form.component.css']
 })
 export class BirthdayCardFormComponent implements OnInit {
-  private cardId: string;
-  private title: string = '';
-  private material: string = '';
-  private picture: string = '';
-  private price: number = 0;
+  public cardId: string;
+  public title: string = '';
+  public material: string = '';
+  public picture: string = '';
+  public price: number = 0;
   static URL_REGEXP = /^http(s*):\/\/.+/;
   static CARDS_PAGE = 'birthdaycards';
 

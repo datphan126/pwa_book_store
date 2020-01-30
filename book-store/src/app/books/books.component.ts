@@ -14,7 +14,7 @@ export interface Book {
   styleUrls: ['./books.component.css']
 })
 export class BooksComponent implements OnInit {
-  private books: Array<Book>;
+  public books: Array<Book>;
   private booksObject: {
     [id: string]: Book;
   };

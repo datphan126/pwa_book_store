@@ -3,6 +3,8 @@ import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
 import mongoose from 'mongoose';
 import cors from 'cors';
+import https from 'https';
+import fs from 'fs'; // Required for HTTPS servers
 
 import addBookController from './controllers/add-book';
 import addBirthdayCard from './controllers/add-birthday-card';
@@ -27,7 +29,7 @@ const db = mongoose.connection;
 const app = express();
 
 // Set the Access-Control-Allow-Origin to http://localhost:4200 to allow our Angular app call the API
-app.use(cors({ origin: `http://localhost:${process.env.FRONTEND_PORT}` }));
+app.use(cors({ origin: `${process.env.FRONT_END_PROTOCOL}://${process.env.FRONT_END_IP}:${process.env.FRONTEND_PORT}` }));
 
 // support parsing of application/json type post data
 app.use(bodyParser.json());
@@ -56,4 +58,11 @@ app.put('/birthdayCard', updateBirthdayCardController);
 
 app.delete('/birthdayCard/:id', deleteBirthdayCardController);
 
+// For starting an HTTP server
 app.listen(process.env.BACKEND_PORT, () => console.log(`The server is running at http://localhost:${process.env.BACKEND_PORT}`));
+
+// For starting an HTTPS server
+// https.createServer({
+//     key: fs.readFileSync(process.env.SSL_KEYS_LOCATION + 'key.pem'),
+//     cert: fs.readFileSync(process.env.SSL_KEYS_LOCATION + 'cert.pem')
+// }, app).listen(process.env.BACKEND_PORT, () => console.log(`The server is running at https://localhost:${process.env.BACKEND_PORT}`));

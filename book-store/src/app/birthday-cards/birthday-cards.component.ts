@@ -13,7 +13,7 @@ export interface Card {
   styleUrls: ['./birthday-cards.component.css']
 })
 export class BirthdayCardsComponent implements OnInit {
-  private cards: Array<Card>;
+  public cards: Array<Card>;
   private cardsObject: {
     [id: string]: Card;
   };

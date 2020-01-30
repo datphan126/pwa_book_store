@@ -5,13 +5,16 @@ import { HttpClient } from '@angular/common/http';
   providedIn: 'root'
 })
 export class ApiService {
-  private ADD_NEW_BOOK_API = 'http://localhost:8080/book';
-  private FETCH_BOOKS_API = 'http://localhost:8080/books';
+  private BACKEND_SERVER_PROTOCOL = 'http://';
+  private BACKEND_SERVER_IP = 'localhost';
+  private BACKEND_SERVER_PORT = '8080'; // 8080 for HTTP and 8443 for HTTPS
+  private ADD_NEW_BOOK_API = this.BACKEND_SERVER_PROTOCOL + this.BACKEND_SERVER_IP + ':' + this.BACKEND_SERVER_PORT + '/book';
+  private FETCH_BOOKS_API = this.BACKEND_SERVER_PROTOCOL + this.BACKEND_SERVER_IP + ':' + this.BACKEND_SERVER_PORT + '/books';
   private FECTH_BOOK_API = this.ADD_NEW_BOOK_API;
   private UPDATE_BOOK_API = this.ADD_NEW_BOOK_API;
   private DELETE_BOOK_API = this.ADD_NEW_BOOK_API;
-  private ADD_NEW_BIRTHDAY_CARD_API = 'http://localhost:8080/birthdayCard';
-  private FETCH_BIRTHDAY_CARDS_API = 'http://localhost:8080/birthdayCards';
+  private ADD_NEW_BIRTHDAY_CARD_API = this.BACKEND_SERVER_PROTOCOL + this.BACKEND_SERVER_IP + ':' + this.BACKEND_SERVER_PORT + '/birthdayCard';
+  private FETCH_BIRTHDAY_CARDS_API = this.BACKEND_SERVER_PROTOCOL + this.BACKEND_SERVER_IP + ':' + this.BACKEND_SERVER_PORT + '/birthdayCards';
   private FECTH_BIRTHDAY_CARD_API = this.ADD_NEW_BIRTHDAY_CARD_API;
   private UPDATE_BIRTHDAY_CARD_API = this.ADD_NEW_BIRTHDAY_CARD_API;
   private DELETE_BIRTHDAY_CARD_API = this.ADD_NEW_BIRTHDAY_CARD_API;
