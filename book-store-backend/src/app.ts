@@ -37,26 +37,26 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 // Book Routes
-app.post('/book', addBookController);
+app.post('/books', addBookController);
 
 app.get('/books', fetchBooks);
 
-app.get('/book/:id', fetchBook);
+app.get('/books/:id', fetchBook);
 
-app.put('/book', updateBookController);
+app.put('/books', updateBookController);
 
-app.delete('/book/:id', deleteBookController);
+app.delete('/books/:id', deleteBookController);
 
 // Birthday Card Routes
-app.post('/birthdayCard', addBirthdayCard);
+app.post('/birthdayCards', addBirthdayCard);
 
 app.get('/birthdayCards', fetchBirthdayCards);
 
-app.get('/birthdayCard/:id', fetchBirthdayCard);
+app.get('/birthdayCards/:id', fetchBirthdayCard);
 
-app.put('/birthdayCard', updateBirthdayCardController);
+app.put('/birthdayCards', updateBirthdayCardController);
 
-app.delete('/birthdayCard/:id', deleteBirthdayCardController);
+app.delete('/birthdayCards/:id', deleteBirthdayCardController);
 
 // For starting an HTTP server
 app.listen(process.env.BACKEND_PORT, () => console.log(`The server is running at http://localhost:${process.env.BACKEND_PORT}`));
