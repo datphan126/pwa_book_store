@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material';
-import { ApiService } from '../api.service';
+import { BackendService } from '../services/backend.service';
 import { Card } from '../birthday-cards/birthday-cards.component';
 
 @Component({
@@ -22,14 +22,14 @@ export class BirthdayCardFormComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private _snackBar: MatSnackBar,
-    private apiService: ApiService,
+    private backendService: BackendService,
   ) { }
 
   ngOnInit() {
     // Get the url pramater
     this.cardId = this.route.snapshot.paramMap.get('id');
     // Load the card data from the database if a card id is passed
-    if (this.cardId) this.apiService.fetchBirthdayCard(this.cardId).subscribe((data: Card[]) => {
+    if (this.cardId) this.backendService.fetchBirthdayCard(this.cardId).subscribe((data: Card[]) => {
       if (data.length !== 0) {
         this.title = data[0].title;
         this.material = data[0].material;
@@ -51,7 +51,7 @@ export class BirthdayCardFormComponent implements OnInit {
     else {
       // Call the add book API and reset all form input vaules
       message = 'Operation success!';
-      this.apiService.addOrUpdateBirthdayCard({
+      this.backendService.addOrUpdateBirthdayCard({
         title: this.title, material: this.material, picture: this.picture, price: this.price, _id: this.cardId
       }).subscribe(() => {
         this.title = '';

@@ -4,7 +4,7 @@ import { HttpClient } from '@angular/common/http';
 @Injectable({
   providedIn: 'root'
 })
-export class ApiService {
+export class BackendService {
   private BACKEND_SERVER_PROTOCOL = 'http://';
   private BACKEND_SERVER_IP = 'localhost';
   private BACKEND_SERVER_PORT = '8080'; // 8080 for HTTP and 8443 for HTTPS
@@ -13,7 +13,7 @@ export class ApiService {
 
   constructor(private httpClient: HttpClient) { }
 
-  // Book APIS
+  // Book API
   fetchBook(id: string) {
     return this.httpClient.get(`${this.BOOKS_API}/${id}`);
   }
@@ -32,7 +32,7 @@ export class ApiService {
     return this.httpClient.delete(`${this.BOOKS_API}/${id}`);
   }
 
-  // Birthday Card APIs
+  // Birthday Card API
   fetchBirthdayCard(id: string) {
     return this.httpClient.get(`${this.BIRTHDAY_CARDS_API}/${id}`);
   }
