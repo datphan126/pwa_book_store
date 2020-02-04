@@ -35,7 +35,7 @@ export class BooksComponent implements OnInit {
   }
 
   async loadAllDataFromCache() {
-    this.books = await this.bookOfflineService.fecthAllBooksFromIDb();
+    this.books = await this.bookOfflineService.fecthAllItemsFromRDb();
     this.booksObject = this.books.reduce((obj, book) => {
       obj[book._id] = book;
       return obj;
@@ -56,9 +56,9 @@ export class BooksComponent implements OnInit {
         return obj;
       }, {});
       // Clear cache before updating
-      this.bookOfflineService.clearIndexedDb();
+      this.bookOfflineService.clearRDb();
       // Update cache
-      this.bookOfflineService.bulkAddToIndexedDb(this.books);
+      this.bookOfflineService.bulkAddToRDb(this.books);
     });
   }
 
