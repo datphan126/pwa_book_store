@@ -2,13 +2,22 @@ import { Injectable } from '@angular/core';
 import Dexie from 'dexie';
 import { Book } from '../books/books.component';
 import { OnlineOfflineService } from './online-offline.service';
+import { v1 as uuidv1 } from 'uuid'; // For generating time-based uuid
+import { BackendService } from '../services/backend.service';
+
+const BOOK_STATE_CREATED = "CREATED";
+const BOOK_STATE_UPDATED = "UPDATED";
+const BOOK_STATE_DELETED = "DELETED";
 
 @Injectable({ providedIn: 'root' })
 export class BookOfflineService {
     private rDb: any; // this database is for caching data from the MongoDB
     private cudDb: any; // this database is for storing new data, modified data, and deleted data
 
-    constructor(private readonly onlineOfflineService: OnlineOfflineService) {
+    constructor(
+        private onlineOfflineService: OnlineOfflineService,
+        private backendService: BackendService
+    ) {
         this.registerToEvents(onlineOfflineService);
 
         this.createDatabases();
@@ -18,7 +27,7 @@ export class BookOfflineService {
         onlineOfflineService.connectionChanged.subscribe(online => {
             if (online) {
                 console.log('went online');
-                // this.sendItemsFromIndexedDb();
+                this.sendItemsFromCUDDb();
             } else {
                 console.log('went offline, storing in indexdb');
             }
@@ -26,19 +35,100 @@ export class BookOfflineService {
     }
 
     private createDatabases() {
-        this.rDb = new Dexie('Books');
+        this.rDb = new Dexie('RBooks');
         this.rDb.version(1).stores({
             books: '_id,title,isbn,author,price,picture'
         });
+        this.cudDb = new Dexie('CUDBooks');
+        this.cudDb.version(1).stores({
+            books: '_id,title,isbn,author,price,picture,state'
+        });
     }
 
-    public addToIndexedDb(book: Book) {
+    // For saving new items, edited items, and deleted items when no connection is available
+    public async saveOffline(title: string, isbn: string, author: string, picture: string, price: number, _id: null | string, isDeleted: boolean) {
+        let book: Book;
+        // New book
+        if (!_id || _id === '') {
+            // A random ID is assigned for the book object. The ID is ignored upon saving the object to MongoDB; however, it
+            // is necessary to assign the ID for saving in IndexedDB
+            book = {
+                _id: uuidv1(), title: title, isbn: isbn, author: author,
+                picture: picture, price: price, state: BOOK_STATE_CREATED
+            };
+            this.putToCUDDb(book);
+            this.putToRDb(book);
+        } else {
+            await this.fecthSingleItemFromRDb(_id).then(async (tmpBook) => {
+                // Item has not been uploaded to remote server
+                if (tmpBook.state === BOOK_STATE_CREATED) {
+                    // Updated local book
+                    if (!isDeleted) {
+                        book = {
+                            _id: _id, title: title, isbn: isbn, author: author,
+                            picture: picture, price: price, state: BOOK_STATE_CREATED
+                        };
+                        this.putToCUDDb(book);
+                        this.putToRDb(book);
+                    }
+                    // Deleted local book
+                    else {
+                        this.deleteFromCUDDb(_id)
+                        this.deleteFromRDb(_id);
+                    }
+                }
+                // Item exists on the remote server
+                else {
+                    // Updated remote book
+                    if (!isDeleted) {
+                        book = {
+                            _id: _id, title: title, isbn: isbn, author: author,
+                            picture: picture, price: price, state: BOOK_STATE_UPDATED
+                        };
+                        this.putToCUDDb(book);
+                        this.putToRDb(book);
+                    }
+                    // Deleted remote book
+                    else {
+                        book = {
+                            _id: _id, title: title, isbn: isbn, author: author,
+                            picture: picture, price: price, state: BOOK_STATE_DELETED
+                        };
+                        this.putToCUDDb(book);
+                        this.deleteFromRDb(_id);
+                    }
+                }
+            }, (error) => console.error(error));
+        }
+    }
+
+    private putToCUDDb(book: Book) {
         this.cudDb.books
-            .add(book)
-            .then(async () => {
-                const allItems: Book[] = await this.cudDb.books.toArray();
-                console.log('saved in DB, DB is now', allItems);
-            })
+            .put(book)
+            .catch(e => {
+                alert('Error: ' + (e.stack || e));
+            });
+    }
+
+    private deleteFromCUDDb(_id: string) {
+        this.cudDb.books
+            .delete(_id)
+            .catch(e => {
+                alert('Error: ' + (e.stack || e));
+            });
+    }
+
+    public putToRDb(book: Book) {
+        this.rDb.books
+            .put(book)
+            .catch(e => {
+                alert('Error: ' + (e.stack || e));
+            });
+    }
+
+    public deleteFromRDb(_id: string) {
+        this.rDb.books
+            .delete(_id)
             .catch(e => {
                 alert('Error: ' + (e.stack || e));
             });
@@ -52,21 +142,43 @@ export class BookOfflineService {
             });
     }
 
-    public clearRDb(){
+    public clearRDb() {
         this.rDb.books.clear();
     }
 
-    public async fecthAllItemsFromRDb(){
+    public async fecthAllItemsFromRDb() {
         const books: Book[] = await this.rDb.books.toArray();
         return books;
     }
 
-    //   private async sendItemsFromIndexedDb() {
-    //     const allItems: Todo[] = await this.db.todos.toArray();
-    //     allItems.forEach((item: Todo) => {
-    //       this.db.todos.delete(item.id).then(() => {
-    //         console.log(`item ${item.id} sent and deleted locally`);
-    //       });
-    //     });
-    //   }
+    public async fecthSingleItemFromRDb(_id: string) {
+        const book: Book = await this.rDb.books.get(_id);
+        return book;
+    }
+
+    private async sendItemsFromCUDDb() {
+        const books: Book[] = await this.cudDb.books.toArray();
+        books.forEach((book: Book) => {
+            // Create new book in MongoDB
+            if (book.state === BOOK_STATE_CREATED) {
+                this.backendService.addOrUpdateBook({
+                    title: book.title, isbn: book.isbn, author: book.author,
+                    picture: book.picture, price: book.price, _id: null
+                }).subscribe();
+            }
+            // Update a book in MongoDB
+            else if (book.state === BOOK_STATE_UPDATED) {
+                this.backendService.addOrUpdateBook({
+                    title: book.title, isbn: book.isbn, author: book.author,
+                    picture: book.picture, price: book.price, _id: book._id
+                }).subscribe();
+            }
+            // Delete a book in MongoDB
+            else {
+                this.backendService.deleteBook(book._id).subscribe();
+            }
+            // Delete locally
+            this.deleteFromCUDDb(book._id);
+        });
+    }
 }

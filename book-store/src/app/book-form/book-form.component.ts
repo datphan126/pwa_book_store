@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BackendService } from '../services/backend.service';
-
+import { BookOfflineService } from '../services/book-offline.service';
+import { OnlineOfflineService } from '../services/online-offline.service';
 import { Book } from '../books/books.component';
 
 @Component({
@@ -25,21 +26,34 @@ export class BookFormComponent implements OnInit {
     private router: Router,
     private _snackBar: MatSnackBar,
     private backendService: BackendService,
+    private bookOfflineService: BookOfflineService,
+    private onlineOfflineService: OnlineOfflineService
   ) { }
 
   ngOnInit() {
     // Get the url pramater
     this.bookId = this.route.snapshot.paramMap.get('id');
     // Load the book data from the database if a book id is passed
-    if (this.bookId) this.backendService.fetchBook(this.bookId).subscribe((data: Book[]) => {
-      if (data.length !== 0 ) {
-        this.title = data[0].title;
-        this.isbn = data[0].isbn;
-        this.author = data[0].author;
-        this.price = data[0].price;
-        this.picture = data[0].picture;
-      } else this.bookId = null;  
-    });
+    if (this.onlineOfflineService.isOnline) {
+      if (this.bookId) this.backendService.fetchBook(this.bookId).subscribe((data: Book[]) => {
+        if (data.length !== 0) {
+          this.title = data[0].title;
+          this.isbn = data[0].isbn;
+          this.author = data[0].author;
+          this.price = data[0].price;
+          this.picture = data[0].picture;
+        } else this.bookId = null;
+      });
+    } else {
+      if (this.bookId) this.bookOfflineService.fecthSingleItemFromRDb(this.bookId).then((book) => {
+        this.title = book.title;
+        this.isbn = book.isbn;
+        this.author = book.author;
+        this.price = book.price;
+        this.picture = book.picture;
+      },
+        (error) => console.error(error));
+    }
   }
 
   handleSave() {
@@ -49,24 +63,36 @@ export class BookFormComponent implements OnInit {
       message = 'Please finish the form.';
     else if (!BookFormComponent.URL_REGEXP.test(this.picture))
       message = 'The picture should be start as http:// or https://';
-    else if (this.price < 0 )
+    else if (this.price < 0)
       message = 'Please offer a price equal or greater than 0.'
     else {
       // Call the add book API and reset all form input vaules
       message = 'Operation sccuess!';
-      this.backendService.addOrUpdateBook({
-        title: this.title, isbn: this.isbn, author: this.author,
-        picture: this.picture, price: this.price, _id: this.bookId,
-      }).subscribe(() => {
-        this.title = '';
-        this.isbn = '';
-        this.author = '';
-        this.picture = '';
-        this.price = 0;
-        this.bookId = null;
-        this.router.navigate([BookFormComponent.BOOKS_PAGE]);
-      });
+      // If there is an Internet connection, save the data to MongoDB; otherwise, save to IndexedDB
+      if (this.onlineOfflineService.isOnline) {
+        this.backendService.addOrUpdateBook({
+          title: this.title, isbn: this.isbn, author: this.author,
+          picture: this.picture, price: this.price, _id: this.bookId,
+        }).subscribe(() => {
+          this.clearForm();
+        });
+      } else {
+        // Save locally
+        this.bookOfflineService.saveOffline(
+          this.title, this.isbn, this.author, this.picture, this.price, this.bookId, false);
+        this.clearForm();
+      }
     }
     this._snackBar.open(message, 'Close', { duration: 2000 });
+  }
+
+  clearForm() {
+    this.title = '';
+    this.isbn = '';
+    this.author = '';
+    this.picture = '';
+    this.price = 0;
+    this.bookId = null;
+    this.router.navigate([BookFormComponent.BOOKS_PAGE]);
   }
 }

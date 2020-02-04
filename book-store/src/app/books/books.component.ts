@@ -7,7 +7,7 @@ import { BookOfflineService } from '../services/book-offline.service';
 import { OnlineOfflineService } from '../services/online-offline.service';
 
 export interface Book {
-  _id: string; title: string; isbn: string; author: string; price: number; picture: string;
+  _id: string; title: string; isbn: string; author: string; price: number; picture: string; state: string;
 }
 
 @Component({
@@ -22,8 +22,12 @@ export class BooksComponent implements OnInit {
     [id: string]: Book;
   };
 
-  constructor(private dialog: MatDialog, private backendService: BackendService,
-    private bookOfflineService: BookOfflineService, private onlineOfflineService: OnlineOfflineService) { }
+  constructor(
+    private dialog: MatDialog,
+    private backendService: BackendService,
+    private bookOfflineService: BookOfflineService,
+    private onlineOfflineService: OnlineOfflineService
+  ) { }
 
   ngOnInit() {
     // Load data from cache first 
@@ -70,9 +74,17 @@ export class BooksComponent implements OnInit {
   }
 
   delete(id: string): void {
-    // Remove the book data from two internal data sources
+    // Delete the item from MongoDB if connected to the Internet; otherwise, save the deleted object to IndexedDB
+    if (this.onlineOfflineService.isOnline) {
+      this.backendService.deleteBook(id).subscribe();
+    } else {
+      this.bookOfflineService.saveOffline(
+        this.booksObject[id].title, this.booksObject[id].isbn, this.booksObject[id].author,
+        this.booksObject[id].picture, this.booksObject[id].price, id, true);
+    }
+    // Remove the book data from internal data sources
     delete this.booksObject[id];
     this.books = this.books.filter((book) => book._id != id);
-    this.backendService.deleteBook(id).subscribe();
+    this.bookOfflineService.deleteFromRDb(id);
   }
 }
