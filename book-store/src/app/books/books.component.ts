@@ -3,6 +3,8 @@ import { MatDialog } from '@angular/material/dialog';
 
 import { BookDetailDialogComponent } from '../book-detail-dialog/book-detail-dialog.component';
 import { BackendService } from '../services/backend.service';
+import { BookOfflineService } from '../services/book-offline.service';
+import { OnlineOfflineService } from '../services/online-offline.service';
 
 export interface Book {
   _id: string; title: string; isbn: string; author: string; price: number; picture: string;
@@ -14,14 +16,38 @@ export interface Book {
   styleUrls: ['./books.component.css']
 })
 export class BooksComponent implements OnInit {
+  private mySubscription: any;
   public books: Array<Book>;
   private booksObject: {
     [id: string]: Book;
   };
 
-  constructor(private dialog: MatDialog, private backendService: BackendService) { }
+  constructor(private dialog: MatDialog, private backendService: BackendService,
+    private bookOfflineService: BookOfflineService, private onlineOfflineService: OnlineOfflineService) { }
 
   ngOnInit() {
+    // Load data from cache first 
+    try {
+      this.loadAllDataFromCache();
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  async loadAllDataFromCache() {
+    this.books = await this.bookOfflineService.fecthAllBooksFromIDb();
+    this.booksObject = this.books.reduce((obj, book) => {
+      obj[book._id] = book;
+      return obj;
+    }, {});
+    // If an internet connection is available, update the cache in IDb with data from the database server
+    if (this.onlineOfflineService.isOnline) {
+      this.updateCache();
+    }
+  }
+
+  // Update the cache in IDb with data from the database server
+  updateCache() {
     this.backendService.fetchBooks().subscribe((data: Array<Book>) => {
       this.books = data;
       // Transfer the book array to an object to speed up the look up
@@ -29,6 +55,10 @@ export class BooksComponent implements OnInit {
         obj[book._id] = book;
         return obj;
       }, {});
+      // Clear cache before updating
+      this.bookOfflineService.clearIndexedDb();
+      // Update cache
+      this.bookOfflineService.bulkAddToIndexedDb(this.books);
     });
   }
 

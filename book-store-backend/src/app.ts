@@ -29,7 +29,8 @@ const db = mongoose.connection;
 const app = express();
 
 // Set the Access-Control-Allow-Origin to http://localhost:4200 to allow our Angular app call the API
-app.use(cors({ origin: `${process.env.FRONT_END_PROTOCOL}://${process.env.FRONT_END_IP}:${process.env.FRONTEND_PORT}` }));
+app.use(cors()); // Allow all CROS requests - For development env only)
+// app.use(cors({ origin: `${process.env.FRONT_END_PROTOCOL}://${process.env.FRONT_END_IP}:${process.env.FRONTEND_PORT}` }));
 
 // support parsing of application/json type post data
 app.use(bodyParser.json());
@@ -59,10 +60,10 @@ app.put('/birthdayCards', updateBirthdayCardController);
 app.delete('/birthdayCards/:id', deleteBirthdayCardController);
 
 // For starting an HTTP server
-app.listen(process.env.BACKEND_PORT, () => console.log(`The server is running at http://localhost:${process.env.BACKEND_PORT}`));
+app.listen(process.env.BACKEND_PORT, () => console.log(`The server is running at http://${process.env.BACKEND_IP}:${process.env.BACKEND_PORT}`));
 
 // For starting an HTTPS server
 // https.createServer({
 //     key: fs.readFileSync(process.env.SSL_KEYS_LOCATION + 'key.pem'),
 //     cert: fs.readFileSync(process.env.SSL_KEYS_LOCATION + 'cert.pem')
-// }, app).listen(process.env.BACKEND_PORT, () => console.log(`The server is running at https://localhost:${process.env.BACKEND_PORT}`));
+// }, app).listen(process.env.BACKEND_PORT, () => console.log(`The server is running at https://${process.env.BACKEND_IP}:${process.env.BACKEND_PORT}`));
