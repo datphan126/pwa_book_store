@@ -27,8 +27,8 @@ export class BookFormComponent implements OnInit {
     private _snackBar: MatSnackBar,
     private backendService: BackendService,
     private bookOfflineService: BookOfflineService,
-    private onlineOfflineService: OnlineOfflineService
-  ) { }
+    private onlineOfflineService: OnlineOfflineService,
+  ) {}
 
   ngOnInit() {
     // Get the url pramater
@@ -67,7 +67,7 @@ export class BookFormComponent implements OnInit {
       message = 'Please offer a price equal or greater than 0.'
     else {
       // Call the add book API and reset all form input vaules
-      message = 'Operation sccuess!';
+      message = 'Operation sccuessful!';
       // If there is an Internet connection, save the data to MongoDB; otherwise, save to IndexedDB
       if (this.onlineOfflineService.isOnline) {
         this.backendService.addOrUpdateBook({
@@ -78,12 +78,16 @@ export class BookFormComponent implements OnInit {
         });
       } else {
         // Save locally
-        this.bookOfflineService.saveOffline(
-          this.title, this.isbn, this.author, this.picture, this.price, this.bookId, false);
-        this.clearForm();
+        this.saveOffline();
       }
     }
     this._snackBar.open(message, 'Close', { duration: 2000 });
+  }
+
+  async saveOffline(){
+    await this.bookOfflineService.saveOffline(
+      this.title, this.isbn, this.author, this.picture, this.price, this.bookId, false);
+    this.clearForm();
   }
 
   clearForm() {

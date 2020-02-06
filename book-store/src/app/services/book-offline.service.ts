@@ -60,9 +60,9 @@ export class BookOfflineService {
             this.putToRDb(book);
         } else {
             await this.fecthSingleItemFromRDb(_id).then(async (tmpBook) => {
-                // Item has not been uploaded to remote server
+                // Item does not exist on the remote server
                 if (tmpBook.state === BOOK_STATE_CREATED) {
-                    // Updated local book
+                    // Update local db and remote db
                     if (!isDeleted) {
                         book = {
                             _id: _id, title: title, isbn: isbn, author: author,
@@ -71,7 +71,7 @@ export class BookOfflineService {
                         this.putToCUDDb(book);
                         this.putToRDb(book);
                     }
-                    // Deleted local book
+                    // Delete from local db; item won't be uploaded to remote db
                     else {
                         this.deleteFromCUDDb(_id)
                         this.deleteFromRDb(_id);
@@ -79,7 +79,7 @@ export class BookOfflineService {
                 }
                 // Item exists on the remote server
                 else {
-                    // Updated remote book
+                    // Update local db and remote db
                     if (!isDeleted) {
                         book = {
                             _id: _id, title: title, isbn: isbn, author: author,
@@ -88,7 +88,7 @@ export class BookOfflineService {
                         this.putToCUDDb(book);
                         this.putToRDb(book);
                     }
-                    // Deleted remote book
+                    // Delete from local db and remote db
                     else {
                         book = {
                             _id: _id, title: title, isbn: isbn, author: author,
