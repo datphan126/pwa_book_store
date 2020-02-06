@@ -23,6 +23,7 @@ export class BookOfflineService {
         this.createDatabases();
     }
 
+    // Observe network status (i.e. online or offline)
     private registerToEvents(onlineOfflineService: OnlineOfflineService) {
         onlineOfflineService.connectionChanged.subscribe(online => {
             if (online) {
