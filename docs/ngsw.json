@@ -1,0 +1,80 @@
+{
+  "configVersion": 1,
+  "timestamp": 1581070765393,
+  "index": "C:/Program Files/Git/pwa_frontend/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "urls": [
+        "C:/Program Files/Git/pwa_frontend/favicon.ico",
+        "C:/Program Files/Git/pwa_frontend/index.html",
+        "C:/Program Files/Git/pwa_frontend/main-es2015.6be600171f28ed5cdd04.js",
+        "C:/Program Files/Git/pwa_frontend/main-es5.6be600171f28ed5cdd04.js",
+        "C:/Program Files/Git/pwa_frontend/manifest.webmanifest",
+        "C:/Program Files/Git/pwa_frontend/polyfills-es2015.2987770fde9daa1d8a2e.js",
+        "C:/Program Files/Git/pwa_frontend/polyfills-es5.6696c533341b95a3d617.js",
+        "C:/Program Files/Git/pwa_frontend/runtime-es2015.edb2fcf2778e7bf1d426.js",
+        "C:/Program Files/Git/pwa_frontend/runtime-es5.edb2fcf2778e7bf1d426.js",
+        "C:/Program Files/Git/pwa_frontend/styles.d695e19b38917dac449c.css"
+      ],
+      "patterns": []
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "urls": [
+        "C:/Program Files/Git/pwa_frontend/assets/icons/icon-128x128.png",
+        "C:/Program Files/Git/pwa_frontend/assets/icons/icon-144x144.png",
+        "C:/Program Files/Git/pwa_frontend/assets/icons/icon-152x152.png",
+        "C:/Program Files/Git/pwa_frontend/assets/icons/icon-192x192.png",
+        "C:/Program Files/Git/pwa_frontend/assets/icons/icon-384x384.png",
+        "C:/Program Files/Git/pwa_frontend/assets/icons/icon-512x512.png",
+        "C:/Program Files/Git/pwa_frontend/assets/icons/icon-72x72.png",
+        "C:/Program Files/Git/pwa_frontend/assets/icons/icon-96x96.png"
+      ],
+      "patterns": []
+    }
+  ],
+  "dataGroups": [],
+  "hashTable": {
+    "C:/Program Files/Git/pwa_frontend/assets/icons/icon-128x128.png": "dae3b6ed49bdaf4327b92531d4b5b4a5d30c7532",
+    "C:/Program Files/Git/pwa_frontend/assets/icons/icon-144x144.png": "b0bd89982e08f9bd2b642928f5391915b74799a7",
+    "C:/Program Files/Git/pwa_frontend/assets/icons/icon-152x152.png": "7479a9477815dfd9668d60f8b3b2fba709b91310",
+    "C:/Program Files/Git/pwa_frontend/assets/icons/icon-192x192.png": "1abd80d431a237a853ce38147d8c63752f10933b",
+    "C:/Program Files/Git/pwa_frontend/assets/icons/icon-384x384.png": "329749cd6393768d3131ed6304c136b1ca05f2fd",
+    "C:/Program Files/Git/pwa_frontend/assets/icons/icon-512x512.png": "559d9c4318b45a1f2b10596bbb4c960fe521dbcc",
+    "C:/Program Files/Git/pwa_frontend/assets/icons/icon-72x72.png": "c457e56089a36952cd67156f9996bc4ce54a5ed9",
+    "C:/Program Files/Git/pwa_frontend/assets/icons/icon-96x96.png": "3914125a4b445bf111c5627875fc190f560daa41",
+    "C:/Program Files/Git/pwa_frontend/favicon.ico": "22f6a4a3bcaafafb0254e0f2fa4ceb89e505e8b2",
+    "C:/Program Files/Git/pwa_frontend/index.html": "162c0f9d9827a59ddcd076eb1a9389ef9e10c145",
+    "C:/Program Files/Git/pwa_frontend/main-es2015.6be600171f28ed5cdd04.js": "99c337905b4872915e9caa9fd64bd99b364a0718",
+    "C:/Program Files/Git/pwa_frontend/main-es5.6be600171f28ed5cdd04.js": "dc488cacd1f2bff6aaf8a605bdbeaa3853364837",
+    "C:/Program Files/Git/pwa_frontend/manifest.webmanifest": "17ef9be5152274436ddb9d31c81fdcf98cbc73d7",
+    "C:/Program Files/Git/pwa_frontend/polyfills-es2015.2987770fde9daa1d8a2e.js": "cf5cbfa9134716054fb479ab21362146cdf1f2ff",
+    "C:/Program Files/Git/pwa_frontend/polyfills-es5.6696c533341b95a3d617.js": "6bff0c03e05bb347d213ad1b3674045eb892d189",
+    "C:/Program Files/Git/pwa_frontend/runtime-es2015.edb2fcf2778e7bf1d426.js": "a9aafcf49f49145093fc831efd9b8e2f6c71bb9c",
+    "C:/Program Files/Git/pwa_frontend/runtime-es5.edb2fcf2778e7bf1d426.js": "a9aafcf49f49145093fc831efd9b8e2f6c71bb9c",
+    "C:/Program Files/Git/pwa_frontend/styles.d695e19b38917dac449c.css": "7f59f3b95087ec9440a8242eec938fce00cc7bee"
+  },
+  "navigationUrls": [
+    {
+      "positive": true,
+      "regex": "^\\/.*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*\\.[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*\\/.*$"
+    }
+  ]
+}
