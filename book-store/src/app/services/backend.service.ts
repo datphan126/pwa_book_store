@@ -1,17 +1,21 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { ConfigService } from './config.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BackendService {
-  private BACKEND_SERVER_PROTOCOL = 'http://';
-  private BACKEND_SERVER_IP = 'localhost';
-  private BACKEND_SERVER_PORT = '8080'; // 8080 for HTTP and 8443 for HTTPS
+  private BACKEND_SERVER_PROTOCOL = this.configService.getConfig().cfg.backendProtocol;
+  private BACKEND_SERVER_IP = this.configService.getConfig().cfg.backendHost;
+  private BACKEND_SERVER_PORT = this.configService.getConfig().cfg.backendPort; // 8080 for HTTP and 8443 for HTTPS
   private BOOKS_API = this.BACKEND_SERVER_PROTOCOL + this.BACKEND_SERVER_IP + ':' + this.BACKEND_SERVER_PORT + '/books';
   private BIRTHDAY_CARDS_API = this.BACKEND_SERVER_PROTOCOL + this.BACKEND_SERVER_IP + ':' + this.BACKEND_SERVER_PORT + '/birthdayCards';
 
-  constructor(private httpClient: HttpClient) { }
+  constructor(
+    private httpClient: HttpClient,
+    private configService: ConfigService
+  ) { }
 
   // Book API
   fetchBook(id: string) {

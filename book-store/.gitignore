@@ -46,4 +46,4 @@ testem.log
 Thumbs.db
 
 # Sensitive files
-.env
+.env.json
