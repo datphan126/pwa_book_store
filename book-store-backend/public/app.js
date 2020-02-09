@@ -7,7 +7,6 @@ var express_1 = __importDefault(require("express"));
 var dotenv_1 = __importDefault(require("dotenv"));
 var body_parser_1 = __importDefault(require("body-parser"));
 var mongoose_1 = __importDefault(require("mongoose"));
-var cors_1 = __importDefault(require("cors"));
 var helmet_1 = __importDefault(require("helmet"));
 var add_book_1 = __importDefault(require("./controllers/add-book"));
 var add_birthday_card_1 = __importDefault(require("./controllers/add-birthday-card"));
@@ -29,9 +28,12 @@ var db = mongoose_1.default.connection;
 var app = express_1.default();
 // Helmet helps you secure your Express apps by setting various HTTP headers
 app.use(helmet_1.default());
-// Set the Access-Control-Allow-Origin to http://localhost:4200 to allow our Angular app call the API
-// app.use(cors()); // Allow all CORS requests - For development env only)
-app.use(cors_1.default({ origin: process.env.FRONTEND_ORIGIN }));
+// Set the Access-Control-Allow-Origin
+app.use(function (req, res, next) {
+    res.header("Access-Control-Allow-Origin", process.env.FRONTEND_ORIGIN); // update to match the domain you will make the request from
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    next();
+});
 // support parsing of application/json type post data
 app.use(body_parser_1.default.json());
 //support parsing of application/x-www-form-urlencoded post data
