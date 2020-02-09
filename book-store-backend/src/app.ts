@@ -5,6 +5,7 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import https from 'https';
 import fs from 'fs'; // Required for HTTPS servers
+import helmet from 'helmet';
 
 import addBookController from './controllers/add-book';
 import addBirthdayCard from './controllers/add-birthday-card';
@@ -27,6 +28,9 @@ mongoose.set('useFindAndModify', false);
 const db = mongoose.connection;
 
 const app = express();
+
+// Helmet helps you secure your Express apps by setting various HTTP headers
+app.use(helmet());
 
 // Set the Access-Control-Allow-Origin to http://localhost:4200 to allow our Angular app call the API
 app.use(cors()); // Allow all CROS requests - For development env only)
