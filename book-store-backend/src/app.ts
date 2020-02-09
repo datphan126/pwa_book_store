@@ -6,15 +6,10 @@ import cors from 'cors';
 import helmet from 'helmet';
 
 import addBookController from './controllers/add-book';
-import addBirthdayCard from './controllers/add-birthday-card';
 import fetchBooks from './controllers/fetch-books';
-import fetchBirthdayCards from './controllers/fetch-birthday-cards';
 import fetchBook from './controllers/fetch-book';
 import updateBookController from './controllers/update-book';
 import deleteBookController from './controllers/delete-book';
-import fetchBirthdayCard from './controllers/fetch-birthday-card';
-import updateBirthdayCardController from './controllers/update-birthday-card';
-import deleteBirthdayCardController from './controllers/delete-birthday-card';
 
 dotenv.config();
 
@@ -49,16 +44,5 @@ app.get('/books/:id', fetchBook);
 app.put('/books', updateBookController);
 
 app.delete('/books/:id', deleteBookController);
-
-// Birthday Card Routes
-app.post('/birthdayCards', addBirthdayCard);
-
-app.get('/birthdayCards', fetchBirthdayCards);
-
-app.get('/birthdayCards/:id', fetchBirthdayCard);
-
-app.put('/birthdayCards', updateBirthdayCardController);
-
-app.delete('/birthdayCards/:id', deleteBirthdayCardController);
 
 app.listen(process.env.BACKEND_PORT, () => console.log(`The server is running at http://${process.env.BACKEND_IP}:${process.env.BACKEND_PORT}`));

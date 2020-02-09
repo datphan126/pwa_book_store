@@ -10,7 +10,6 @@ export class BackendService {
   private BACKEND_SERVER_IP = environment.backendHost;
   private BACKEND_SERVER_PORT = environment.production === false ? ':' + environment.backendPort : ''; // 8080 for HTTP and 8443 for HTTPS
   private BOOKS_API = this.BACKEND_SERVER_PROTOCOL + this.BACKEND_SERVER_IP + this.BACKEND_SERVER_PORT + '/books';
-  private BIRTHDAY_CARDS_API = this.BACKEND_SERVER_PROTOCOL + this.BACKEND_SERVER_IP + this.BACKEND_SERVER_PORT + '/birthdayCards';
 
   constructor(
     private httpClient: HttpClient
@@ -33,24 +32,5 @@ export class BackendService {
 
   deleteBook(id: string) {
     return this.httpClient.delete(`${this.BOOKS_API}/${id}`);
-  }
-
-  // Birthday Card API
-  fetchBirthdayCard(id: string) {
-    return this.httpClient.get(`${this.BIRTHDAY_CARDS_API}/${id}`);
-  }
-
-  fetchBirthdayCards() {
-    return this.httpClient.get(this.BIRTHDAY_CARDS_API);
-  }
-
-  addOrUpdateBirthdayCard(
-    card: { title: string, material: string, picture: string, price: number, _id: null | string }) {
-    if (!card._id || card._id === '') return this.httpClient.post(this.BIRTHDAY_CARDS_API, card);
-    return this.httpClient.put(this.BIRTHDAY_CARDS_API, card);
-  }
-
-  deleteBirthdayCard(id: string) {
-    return this.httpClient.delete(`${this.BIRTHDAY_CARDS_API}/${id}`);
   }
 }
