@@ -25,14 +25,14 @@ const app = express();
 // Helmet helps you secure your Express apps by setting various HTTP headers
 app.use(helmet());
 
+// Set the Access-Control-Allow-Origin to http://localhost:4200 to allow our Angular app call the API
+// app.use(cors()); // Allow all CORS requests - For development env only)
+app.use(cors({ origin: process.env.FRONTEND_ORIGIN }));
+
 // support parsing of application/json type post data
 app.use(bodyParser.json());
 //support parsing of application/x-www-form-urlencoded post data
 app.use(bodyParser.urlencoded({ extended: true }));
-
-// Set the Access-Control-Allow-Origin to http://localhost:4200 to allow our Angular app call the API
-// app.use(cors()); // Allow all CORS requests - For development env only)
-app.use(cors({ origin: process.env.FRONTEND_ORIGIN }));
 
 // Book Routes
 app.post('/books', addBookController);
