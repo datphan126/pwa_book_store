@@ -1,8 +1,7 @@
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <mat-toolbar color="primary">
   <span [routerLink]="['/']" class="clickable"><i class="material-icons">local_library</i>&nbsp;&nbsp;Book Store</span>
-  <span *ngIf="!isOnline" class="blinking">&nbsp;&nbsp;&nbsp;<i class="material-icons">wifi_off</i></span>
-  <!-- <span ng-hide="isOnline" class="blinking">&nbsp;&nbsp;&nbsp;<i class="material-icons">wifi_off</i></span> -->
+  <span *ngIf="!isOnline" class="blinking" matTooltip="You are working offline">&nbsp;&nbsp;&nbsp;<i class="material-icons">wifi_off</i></span>
 
   <!-- This fills the remaining space of the current row -->
   <span class="fill-remaining-space"></span>

@@ -12,7 +12,7 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { HttpClientModule } from '@angular/common/http';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatDividerModule } from '@angular/material/divider';
-
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BookFormComponent } from './book-form/book-form.component';
@@ -20,6 +20,7 @@ import { BooksComponent } from './books/books.component';
 import { BookDetailDialogComponent } from './book-detail-dialog/book-detail-dialog.component';
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { environment } from '../environments/environment';
+import 'hammerjs';
 
 @NgModule({
   // Loaded only when needed
@@ -41,6 +42,7 @@ import { environment } from '../environments/environment';
     MatInputModule,
     MatToolbarModule,
     MatButtonModule,
+    MatTooltipModule,
     MatMenuModule,
     FormsModule,
     MatSnackBarModule,
