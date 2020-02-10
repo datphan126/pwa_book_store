@@ -1,11 +1,13 @@
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <mat-toolbar color="primary">
-  <span [routerLink]="['/']" class="clickable"><i class="material-icons">local_library</i>&nbsp;&nbsp;Book Store</span>
-  <span *ngIf="!isOnline" class="blinking" matTooltip="You are working offline">&nbsp;&nbsp;&nbsp;<i class="material-icons">wifi_off</i></span>
-
+  <button mat-button [routerLink]="['/']">
+    <img class="png-icon" src="assets/icons/book-72x72.png" style="width: 24px; height: 24px;">
+ </button>
+  <span [routerLink]="['/']" class="clickable">Book Store</span>
+  <span *ngIf="!isOnline" class="blinking" matTooltip="You are working offline">&nbsp;&nbsp;&nbsp;<i
+      class="material-icons">wifi_off</i></span>
   <!-- This fills the remaining space of the current row -->
   <span class="fill-remaining-space"></span>
-
   <span>
     <button mat-button [matMenuTriggerFor]="manageMenu">Manage Products</button>
     <mat-menu #manageMenu="matMenu" xPosition="before">
@@ -13,7 +15,5 @@
       <button mat-menu-item [routerLink]="['/admin/bookform']">Add Book</button>
     </mat-menu>
   </span>
-  <span></span>
 </mat-toolbar>
-
 <router-outlet></router-outlet>

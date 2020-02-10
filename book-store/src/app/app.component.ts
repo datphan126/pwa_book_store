@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { OnlineOfflineService } from './services/online-offline.service';
 
 @Component({
@@ -9,8 +9,12 @@ import { OnlineOfflineService } from './services/online-offline.service';
 export class AppComponent {
   title = 'book-store';
   isOnline: boolean = true;
+  deferredPrompt: any;
+  showButton = false;
 
-  constructor(private onlineOfflineService: OnlineOfflineService) {
+  constructor(
+    private onlineOfflineService: OnlineOfflineService
+  ) {
     this.isOnline = this.onlineOfflineService.isOnline;
     this.registerToEvents(onlineOfflineService);
   }
