@@ -26,11 +26,11 @@ export class BackendService {
 
   addOrUpdateBook(
     book: { title: string, isbn: string, author: string; picture: string, price: number, _id: null | string }) {
-    if (!book._id || book._id === '') return this.httpClient.post(this.BOOKS_API, book);
-    return this.httpClient.put(this.BOOKS_API, book);
+    if (!book._id || book._id === '') return this.httpClient.post(this.BOOKS_API, book, {observe: 'response'});
+    return this.httpClient.put(this.BOOKS_API, book, {observe: 'response'});
   }
 
   deleteBook(id: string) {
-    return this.httpClient.delete(`${this.BOOKS_API}/${id}`);
+    return this.httpClient.delete(`${this.BOOKS_API}/${id}`, {observe: 'response'});
   }
 }

@@ -24,7 +24,7 @@ export class BookFormComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private _snackBar: MatSnackBar,
+    private snackBar: MatSnackBar,
     private backendService: BackendService,
     private bookOfflineService: BookOfflineService,
     private onlineOfflineService: OnlineOfflineService,
@@ -59,12 +59,12 @@ export class BookFormComponent implements OnInit {
   handleSave() {
     let message: string;
     // If the the form input values are invalid, show a snackbar
-    if (this.title === '' || this.isbn === '' || this.author === '')
+    if (this.title.trim() === '' || this.isbn.trim() === '' || this.author.trim() === '')
       message = 'Please finish the form.';
     else if (!BookFormComponent.URL_REGEXP.test(this.picture))
-      message = 'The picture should be start as http:// or https://';
-    else if (this.price < 0)
-      message = 'Please offer a price equal or greater than 0.'
+      message = 'The picture should be start with http:// or https://';
+    else if (this.price <= 0)
+      message = 'Price should be greater than 0.'
     else {
       // Call the add book API and reset all form input vaules
       message = 'Operation sccuessful!';
@@ -81,7 +81,7 @@ export class BookFormComponent implements OnInit {
         this.saveOffline();
       }
     }
-    this._snackBar.open(message, 'Close', { duration: 2000 });
+    this.snackBar.open(message, 'Close', { duration: 2000 });
   }
 
   async saveOffline(){

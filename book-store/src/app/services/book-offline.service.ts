@@ -4,6 +4,7 @@ import { Book } from '../books/books.component';
 import { OnlineOfflineService } from './online-offline.service';
 import { v1 as uuidv1 } from 'uuid'; // For generating time-based uuid
 import { BackendService } from '../services/backend.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 const BOOK_STATE_CREATED = "CREATED";
 const BOOK_STATE_UPDATED = "UPDATED";
@@ -16,21 +17,23 @@ export class BookOfflineService {
 
     constructor(
         private onlineOfflineService: OnlineOfflineService,
-        private backendService: BackendService
+        private backendService: BackendService,
+        private snackBar: MatSnackBar
     ) {
         this.registerToEvents(onlineOfflineService);
-
         this.createDatabases();
+        // Attempt to sync the work when the user reopens the tab/browser
+        this.sendItemsFromCUDDb();
     }
 
     // Observe network status (i.e. online or offline)
     private registerToEvents(onlineOfflineService: OnlineOfflineService) {
         onlineOfflineService.connectionChanged.subscribe(online => {
             if (online) {
-                console.log('went online');
+                this.snackBar.open("You are back online", 'Close', { duration: 2000 });
                 this.sendItemsFromCUDDb();
             } else {
-                console.log('went offline, storing in indexdb');
+                this.snackBar.open("You are working offline", 'Close', { duration: 2000 });
             }
         });
     }
@@ -159,27 +162,41 @@ export class BookOfflineService {
 
     private async sendItemsFromCUDDb() {
         const books: Book[] = await this.cudDb.books.toArray();
-        books.forEach((book: Book) => {
+        books.forEach(async (book: Book) => {
             // Create new book in MongoDB
             if (book.state === BOOK_STATE_CREATED) {
-                this.backendService.addOrUpdateBook({
+                await this.backendService.addOrUpdateBook({
                     title: book.title, isbn: book.isbn, author: book.author,
                     picture: book.picture, price: book.price, _id: null
-                }).subscribe();
+                }).subscribe(res => {
+                    // Delete the item locally only if the sync was successfull
+                    if (res.status == 200) {
+                        this.deleteFromCUDDb(book._id);
+                    }
+                });
             }
             // Update a book in MongoDB
             else if (book.state === BOOK_STATE_UPDATED) {
-                this.backendService.addOrUpdateBook({
+                await this.backendService.addOrUpdateBook({
                     title: book.title, isbn: book.isbn, author: book.author,
                     picture: book.picture, price: book.price, _id: book._id
-                }).subscribe();
+                }).subscribe(res => {
+                    // Delete the item locally only if the sync was successfull
+                    if (res.status == 200) {
+                        this.deleteFromCUDDb(book._id);
+                    }
+                });
             }
             // Delete a book in MongoDB
             else {
-                this.backendService.deleteBook(book._id).subscribe();
+                await this.backendService.deleteBook(book._id).subscribe(res => {
+                    // Delete the item locally only if the sync was successfull
+                    if (res.status == 200) {
+                        this.deleteFromCUDDb(book._id);
+                    }
+                });
             }
-            // Delete locally
-            this.deleteFromCUDDb(book._id);
+            this.snackBar.open("New updates available. Please refresh this page!", 'Close', { duration: 5000 });
         });
     }
 }

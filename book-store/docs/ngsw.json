@@ -1,6 +1,6 @@
 {
   "configVersion": 1,
-  "timestamp": 1581318782170,
+  "timestamp": 1581379029874,
   "index": "https://datphan126.github.io/pwa_book_store/index.html",
   "assetGroups": [
     {
@@ -10,8 +10,8 @@
       "urls": [
         "https://datphan126.github.io/pwa_book_store/favicon.ico",
         "https://datphan126.github.io/pwa_book_store/index.html",
-        "https://datphan126.github.io/pwa_book_store/main-es2015.506cb9e103f29290c7b8.js",
-        "https://datphan126.github.io/pwa_book_store/main-es5.506cb9e103f29290c7b8.js",
+        "https://datphan126.github.io/pwa_book_store/main-es2015.5cdd33b4f3160680c653.js",
+        "https://datphan126.github.io/pwa_book_store/main-es5.5cdd33b4f3160680c653.js",
         "https://datphan126.github.io/pwa_book_store/manifest.webmanifest",
         "https://datphan126.github.io/pwa_book_store/polyfills-es2015.2987770fde9daa1d8a2e.js",
         "https://datphan126.github.io/pwa_book_store/polyfills-es5.6696c533341b95a3d617.js",
@@ -64,10 +64,10 @@
     "https://datphan126.github.io/pwa_book_store/assets/icons/icon-512x512.png": "559d9c4318b45a1f2b10596bbb4c960fe521dbcc",
     "https://datphan126.github.io/pwa_book_store/assets/icons/icon-72x72.png": "c457e56089a36952cd67156f9996bc4ce54a5ed9",
     "https://datphan126.github.io/pwa_book_store/assets/icons/icon-96x96.png": "3914125a4b445bf111c5627875fc190f560daa41",
-    "https://datphan126.github.io/pwa_book_store/favicon.ico": "22f6a4a3bcaafafb0254e0f2fa4ceb89e505e8b2",
-    "https://datphan126.github.io/pwa_book_store/index.html": "c1960b73abb9b4ab249d33595afe20338a4b0270",
-    "https://datphan126.github.io/pwa_book_store/main-es2015.506cb9e103f29290c7b8.js": "c3a119b48f0f6e4f1cf2360f5063e8fc971823d1",
-    "https://datphan126.github.io/pwa_book_store/main-es5.506cb9e103f29290c7b8.js": "05553bc3065b906ab7d78f12d04133e81f9e3135",
+    "https://datphan126.github.io/pwa_book_store/favicon.ico": "2a2587105caae590562cd3ffa4a75857fe10fb78",
+    "https://datphan126.github.io/pwa_book_store/index.html": "421257b3d5549ec11fb735347f22791589dac8f7",
+    "https://datphan126.github.io/pwa_book_store/main-es2015.5cdd33b4f3160680c653.js": "9456b19ddfb3304539acfbab4f9a3965bb988be7",
+    "https://datphan126.github.io/pwa_book_store/main-es5.5cdd33b4f3160680c653.js": "4c070de183ded24aa7a230abc42092faa5407287",
     "https://datphan126.github.io/pwa_book_store/manifest.webmanifest": "f5ab0696b4bd8bb933210b8bd18e4785635eb50f",
     "https://datphan126.github.io/pwa_book_store/polyfills-es2015.2987770fde9daa1d8a2e.js": "cf5cbfa9134716054fb479ab21362146cdf1f2ff",
     "https://datphan126.github.io/pwa_book_store/polyfills-es5.6696c533341b95a3d617.js": "6bff0c03e05bb347d213ad1b3674045eb892d189",
