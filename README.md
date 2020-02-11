@@ -1,27 +1,10 @@
-# BookStore
+# Book Store - Offline First Progressive App
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 8.3.6.
+This project was generated based on a MEAN stack project named Book Store that I worked on before.
 
-## Development server
+The purpose of this project is to enable PWA features, such as offline capability, background data synchronization, and add to home screen, for the Book Store app.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+The frontend app is being hosted on GitHub Pages while the backend app is hosted on an AWS EC2 instance. The database used in this project is MongoDB Atlas.
 
-## Code scaffolding
-
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
-
-## Build
-
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
-
-## Running unit tests
-
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
-
-## Running end-to-end tests
-
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+Demo Link:
+https://datphan126.github.io/pwa_book_store/
