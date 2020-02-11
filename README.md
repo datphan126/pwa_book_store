@@ -1,4 +1,4 @@
-# Book Store - Offline First Progressive App
+# Book Store - Offline First Progressive Web App
 
 This project was generated based on a MEAN stack project named Book Store that I worked on before.
 
