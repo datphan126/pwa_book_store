@@ -38,6 +38,7 @@ export class BooksComponent implements OnInit {
     }
   }
 
+  // Load data from cache first and then update the cache if internet is available
   async loadAllDataFromCache() {
     this.books = await this.bookOfflineService.fecthAllItemsFromRDb();
     this.booksObject = this.books.reduce((obj, book) => {
@@ -66,6 +67,7 @@ export class BooksComponent implements OnInit {
     });
   }
 
+  // Open a dialog showing a book's details
   openDialog(id: string): void {
     this.dialog.open(BookDetailDialogComponent, {
       width: '350px',

@@ -20,9 +20,10 @@ export class BookOfflineService {
         private backendService: BackendService,
         private snackBar: MatSnackBar
     ) {
+        // Listen to network status events (i.e. online and offline)
         this.registerToEvents(onlineOfflineService);
         this.createDatabases();
-        // Attempt to sync the work when the user reopens the tab/browser
+        // Attempt to sync the offline-saved data when the user reopens the tab/browser
         this.sendItemsFromCUDDb();
     }
 
@@ -31,6 +32,7 @@ export class BookOfflineService {
         onlineOfflineService.connectionChanged.subscribe(online => {
             if (online) {
                 this.snackBar.open("You are back online", 'Close', { duration: 2000 });
+                // Sync the CUDDB to the remote server when the server is back online
                 this.sendItemsFromCUDDb();
             } else {
                 this.snackBar.open("You are working offline", 'Close', { duration: 2000 });
@@ -160,6 +162,9 @@ export class BookOfflineService {
         return book;
     }
 
+    // Synchronize CUDDB to the remote database.
+    // If an item is failed to send (i.e. response status is different from 200), it will not be removed from the local DB.
+    // Failed items will wait for the next database sync.
     private async sendItemsFromCUDDb() {
         const books: Book[] = await this.cudDb.books.toArray();
         books.forEach(async (book: Book) => {

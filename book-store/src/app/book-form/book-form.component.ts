@@ -28,7 +28,7 @@ export class BookFormComponent implements OnInit {
     private backendService: BackendService,
     private bookOfflineService: BookOfflineService,
     private onlineOfflineService: OnlineOfflineService,
-  ) {}
+  ) { }
 
   ngOnInit() {
     // Get the url pramater
@@ -36,21 +36,34 @@ export class BookFormComponent implements OnInit {
     // Load the book data from the database if a book id is passed
     if (this.onlineOfflineService.isOnline) {
       if (this.bookId) this.backendService.fetchBook(this.bookId).subscribe((data: Book[]) => {
+        // Book exists
         if (data.length !== 0) {
           this.title = data[0].title;
           this.isbn = data[0].isbn;
           this.author = data[0].author;
           this.price = data[0].price;
           this.picture = data[0].picture;
-        } else this.bookId = null;
+        } else {
+          this.bookId = null;
+          // Show an error message and navigate back to the main page
+          this.snackBar.open("The book does not exist", 'Close', { duration: 2000 });
+          this.router.navigate([BookFormComponent.BOOKS_PAGE]);
+        }
       });
     } else {
       if (this.bookId) this.bookOfflineService.fecthSingleItemFromRDb(this.bookId).then((book) => {
-        this.title = book.title;
-        this.isbn = book.isbn;
-        this.author = book.author;
-        this.price = book.price;
-        this.picture = book.picture;
+        if (book) {
+          this.title = book.title;
+          this.isbn = book.isbn;
+          this.author = book.author;
+          this.price = book.price;
+          this.picture = book.picture;
+        } else {
+          this.bookId = null;
+          // Show an error message and navigate back to the main page
+          this.snackBar.open("The book does not exist", 'Close', { duration: 2000 });
+          this.router.navigate([BookFormComponent.BOOKS_PAGE]);
+        }
       },
         (error) => console.error(error));
     }
@@ -77,14 +90,14 @@ export class BookFormComponent implements OnInit {
           this.clearForm();
         });
       } else {
-        // Save locally
+        // Save data locally
         this.saveOffline();
       }
     }
     this.snackBar.open(message, 'Close', { duration: 2000 });
   }
 
-  async saveOffline(){
+  async saveOffline() {
     await this.bookOfflineService.saveOffline(
       this.title, this.isbn, this.author, this.picture, this.price, this.bookId, false);
     this.clearForm();

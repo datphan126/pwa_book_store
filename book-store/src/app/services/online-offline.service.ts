@@ -15,6 +15,7 @@ export class OnlineOfflineService {
     return !!window.navigator.onLine;
   }
 
+  // Listen to network status changes
   constructor() {
     window.addEventListener('online', () => this.updateOnlineStatus());
     window.addEventListener('offline', () => this.updateOnlineStatus());
