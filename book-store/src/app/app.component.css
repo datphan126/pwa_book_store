@@ -10,17 +10,11 @@
     cursor: pointer;
 }
 
-.offline-status{
-    color: red;
+.blink_img {
+    animation: blinker 2s linear infinite;
+    width: 24px; 
+    height: 24px;
 }
-
-.blinking{
-    animation:blinkingText 1.2s infinite;
-}
-@keyframes blinkingText{
-    0%{     color:white;    }
-    49%{    color:white; }
-    60%{    color:transparent; }
-    99%{    color:transparent;  }
-    100%{   color:white;    }
+@keyframes blinker {
+50% { opacity: 0; }
 }

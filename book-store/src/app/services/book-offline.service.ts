@@ -172,6 +172,8 @@ export class BookOfflineService {
                     // Delete the item locally only if the sync was successfull
                     if (res.status == 200) {
                         this.deleteFromCUDDb(book._id);
+                    } else {
+                        console.log(res); // Log error
                     }
                 });
             }
@@ -184,6 +186,8 @@ export class BookOfflineService {
                     // Delete the item locally only if the sync was successfull
                     if (res.status == 200) {
                         this.deleteFromCUDDb(book._id);
+                    } else {
+                        console.log(res); // Log error
                     }
                 });
             }
@@ -193,6 +197,8 @@ export class BookOfflineService {
                     // Delete the item locally only if the sync was successfull
                     if (res.status == 200) {
                         this.deleteFromCUDDb(book._id);
+                    } else {
+                        console.log(res); // Log error
                     }
                 });
             }

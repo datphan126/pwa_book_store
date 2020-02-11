@@ -1,11 +1,12 @@
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<!-- <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"> -->
 <mat-toolbar color="primary">
-  <button mat-button [routerLink]="['/']">
-    <img class="png-icon" src="assets/icons/book-72x72.png" style="width: 24px; height: 24px;">
- </button>
+  <img [routerLink]="['/']" class="png-icon" src="assets/icons/book-72x72.png" style="width: 24px; height: 24px;">
+  &nbsp;
   <span [routerLink]="['/']" class="clickable">Book Store</span>
-  <span *ngIf="!isOnline" class="blinking" matTooltip="You are working offline">&nbsp;&nbsp;&nbsp;<i
-      class="material-icons">wifi_off</i></span>
+  &nbsp;
+  <!-- Cache the wifi_off_white.png so that it can be used when offline -->
+  <img src="assets/icons/wifi_off_white.png" style="display:none;" />
+  <img *ngIf="!isOnline" class="png-icon" src="assets/icons/wifi_off_white.png" class="blink_img">
   <!-- This fills the remaining space of the current row -->
   <span class="fill-remaining-space"></span>
   <span>
