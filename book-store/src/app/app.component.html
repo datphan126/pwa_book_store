@@ -6,7 +6,7 @@
   &nbsp;
   <!-- Cache the wifi_off_white.png so that it can be used when offline -->
   <img src="assets/icons/wifi_off_white.png" style="display:none;" />
-  <img *ngIf="!isOnline" class="png-icon" src="assets/icons/wifi_off_white.png" class="blink_img">
+  <img *ngIf="!isOnline" src="assets/icons/wifi_off_white.png" class="blink_img" matTooltip="You are working offline">
   <!-- This fills the remaining space of the current row -->
   <span class="fill-remaining-space"></span>
   <span>

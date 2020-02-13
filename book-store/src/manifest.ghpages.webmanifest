@@ -4,8 +4,7 @@
   "theme_color": "#1976d2",
   "background_color": "#fafafa",
   "display": "standalone",
-  "scope": "https://datphan126.github.io/pwa_book_store/",
-  "start_url":"/pwa_book_store/index.html",
+  "start_url":"index.html",
   "icons": [
     {
       "src": "assets/icons/book-72x72.png",
