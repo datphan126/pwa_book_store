@@ -2,6 +2,13 @@
 <html lang="en">
 
 <head>
+  <script>
+    if ( 'serviceWorker' in navigator ) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('ngsw-worker.js');
+      });
+    }
+  </script>
   <meta charset="utf-8">
   <title>BookStore</title>
   <base href="/">

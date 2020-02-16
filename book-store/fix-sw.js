@@ -12,7 +12,7 @@
 * enter the value set as the --base-href flag when deploying to a live URL
 * if not deploying to a live URL, and only running locally, set this to null, as the URL parsing fix will not be necessary
 */
-const SITE_BASE_HREF = 'https://datphan126.github.io/pwa_book_store/';
+const SITE_BASE_HREF = 'https://datphan126.github.io/';
 
 
 
@@ -29,7 +29,7 @@ const replace = require('replace-in-file');
 const existingStateReplacements = {
     files: 'docs/ngsw-worker.js',
     from: /this\.state = DriverReadyState\.EXISTING_CLIENTS_ONLY;/g,
-    to: '/*this.state = DriverReadyState.EXISTING_CLIENTS_ONLY;*/ ' + 
+    to: '/*this.state = DriverReadyState.EXISTING_CLIENTS_ONLY;*/ ' +
         '// removing EXISTING_CLIENTS_ONLY state, as it behaves incorrectly in offline testing, both locally & on GitHub pages'
 }
 
@@ -51,8 +51,8 @@ try {
     const existingInstances = replace.sync(existingStateReplacements);
     console.log('Replacements of EXISTING_CLIENTS_ONLY states: ', existingInstances.join(', '));
 }
-catch(error) {
-    console.error('Error occurred while replacing EXISTING_CLIENTS_ONLY states: ', error);    
+catch (error) {
+    console.error('Error occurred while replacing EXISTING_CLIENTS_ONLY states: ', error);
 }
 
 try {

@@ -2,6 +2,13 @@
 <html lang="en">
 
 <head>
+  <script>
+    if ( 'serviceWorker' in navigator ) {
+      window.addEventListener('load', function() {
+        navigator.serviceWorker.register('ngsw-worker.js');
+      });
+    }
+  </script>
   <meta charset="utf-8">
   <title>BookStore</title>
   <base href="/">
@@ -15,6 +22,6 @@
 <body>
   <app-root></app-root>
   <noscript>Please enable JavaScript to continue using this application.</noscript>
-<script src="runtime-es2015.edb2fcf2778e7bf1d426.js" type="module"></script><script src="runtime-es5.edb2fcf2778e7bf1d426.js" nomodule defer></script><script src="polyfills-es5.6696c533341b95a3d617.js" nomodule defer></script><script src="polyfills-es2015.2987770fde9daa1d8a2e.js" type="module"></script><script src="main-es2015.c6644c88752d9dd6d000.js" type="module"></script><script src="main-es5.c6644c88752d9dd6d000.js" nomodule defer></script></body>
+<script src="runtime-es2015.c5fa8325f89fc516600b.js" type="module"></script><script src="runtime-es5.c5fa8325f89fc516600b.js" nomodule defer></script><script src="polyfills-es5.3e8196928d184a6e5319.js" nomodule defer></script><script src="polyfills-es2015.5b10b8fd823b6392f1fd.js" type="module"></script><script src="main-es2015.967413929a64cdf775e7.js" type="module"></script><script src="main-es5.967413929a64cdf775e7.js" nomodule defer></script></body>
 
 </html>
