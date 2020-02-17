@@ -167,7 +167,6 @@ export class BookOfflineService {
     // Failed items will wait for the next database sync.
     private async sendItemsFromCUDDb() {
         const books: Book[] = await this.cudDb.books.toArray();
-        const status = { isSuccessful: false };
         books.forEach(async (book: Book) => {
             // Create new book in MongoDB
             if (book.state === BOOK_STATE_CREATED) {
@@ -178,7 +177,6 @@ export class BookOfflineService {
                     // Delete the item locally only if the sync was successfull
                     if (res.status == 200) {
                         this.deleteFromCUDDb(book._id);
-                        status.isSuccessful = true;
                     } else {
                         console.log(res); // Log error
                     }
@@ -193,7 +191,6 @@ export class BookOfflineService {
                     // Delete the item locally only if the sync was successfull
                     if (res.status == 200) {
                         this.deleteFromCUDDb(book._id);
-                        status.isSuccessful = true;
                     } else {
                         console.log(res); // Log error
                     }
@@ -205,13 +202,11 @@ export class BookOfflineService {
                     // Delete the item locally only if the sync was successfull
                     if (res.status == 200) {
                         this.deleteFromCUDDb(book._id);
-                        status.isSuccessful = true;
                     } else {
                         console.log(res); // Log error
                     }
                 });
             }
         });
-        if (status.isSuccessful) this.snackBar.open("New updates available. Please refresh this page!", 'Close', { duration: 5000 });
     }
 }

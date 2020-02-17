@@ -5,7 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "buildGHP": "ng build --prod --output-path docs&&gh-pages -d docs -b master -r \"https://github.com/datphan126/datphan126.github.io.git\"",
+    "buildGHP": "ng build --prod&&node fix-sw.js&&cp dist/book-store/index.html dist/book-store/404.html&&gh-pages -d dist/book-store -b master -r \"https://github.com/datphan126/datphan126.github.io.git\"",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
@@ -44,7 +44,6 @@
     "@types/node": "~8.9.4",
     "@types/uuid": "^3.4.7",
     "codelyzer": "^5.2.1",
-    "convict": "^5.2.0",
     "jasmine-core": "~3.4.0",
     "jasmine-spec-reporter": "~4.2.1",
     "karma": "~4.1.0",
@@ -55,7 +54,6 @@
     "protractor": "^5.4.3",
     "ts-node": "~7.0.0",
     "tslint": "~5.15.0",
-    "typescript": "~3.5.3",
-    "val-loader": "^2.1.0"
+    "typescript": "~3.5.3"
   }
 }
