@@ -76,14 +76,10 @@ export class BooksComponent implements OnInit {
   }
 
   delete(id: string): void {
-    // Delete the item from MongoDB if connected to the Internet; otherwise, save the deleted object to IndexedDB
-    if (this.onlineOfflineService.isOnline) {
-      this.backendService.deleteBook(id).subscribe();
-    } else {
-      this.bookOfflineService.saveOffline(
-        this.booksObject[id].title, this.booksObject[id].isbn, this.booksObject[id].author,
-        this.booksObject[id].picture, this.booksObject[id].price, id, true);
-    }
+    // Save the deleted object to IndexedDB
+    this.bookOfflineService.saveOffline(
+      this.booksObject[id].title, this.booksObject[id].isbn, this.booksObject[id].author,
+      this.booksObject[id].picture, this.booksObject[id].price, id, true);
     // Remove the book data from internal data sources
     delete this.booksObject[id];
     this.books = this.books.filter((book) => book._id != id);

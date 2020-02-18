@@ -24,7 +24,7 @@ export class BookOfflineService {
         this.registerToEvents(onlineOfflineService);
         this.createDatabases();
         // Attempt to sync the offline-saved data when the user reopens the tab/browser
-        this.sendItemsFromCUDDb();
+        this.syncData();
     }
 
     // Observe network status (i.e. online or offline)
@@ -49,6 +49,13 @@ export class BookOfflineService {
         this.cudDb.version(1).stores({
             books: '_id,title,isbn,author,price,picture,state'
         });
+    }
+
+    // Synchronize CUDDB with MongoDB
+    public syncData() {
+        // Check if there is an Internet connection
+        if (this.onlineOfflineService.isOnline)
+            this.sendItemsFromCUDDb();
     }
 
     // For saving new items, edited items, and deleted items when no connection is available
@@ -106,6 +113,8 @@ export class BookOfflineService {
                 }
             }, (error) => console.error(error));
         }
+        // Attempt to sync CUDDB with MongoDB
+        this.syncData();
     }
 
     private putToCUDDb(book: Book) {

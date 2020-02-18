@@ -33,45 +33,27 @@ export class BookFormComponent implements OnInit {
   ngOnInit() {
     // Get the url pramater
     this.bookId = this.route.snapshot.paramMap.get('id');
-    // Load the book data from the database if a book id is passed
-    if (this.onlineOfflineService.isOnline) {
-      if (this.bookId) this.backendService.fetchBook(this.bookId).subscribe((data: Book[]) => {
-        // Book exists
-        if (data.length !== 0) {
-          this.title = data[0].title;
-          this.isbn = data[0].isbn;
-          this.author = data[0].author;
-          this.price = data[0].price;
-          this.picture = data[0].picture;
-        } else {
-          this.bookId = null;
-          // Show an error message and navigate back to the main page
-          this.snackBar.open("The book does not exist", 'Close', { duration: 2000 });
-          this.router.navigate([BookFormComponent.BOOKS_PAGE]);
-        }
-      });
-    } else {
-      if (this.bookId) this.bookOfflineService.fecthSingleItemFromRDb(this.bookId).then((book) => {
-        if (book) {
-          this.title = book.title;
-          this.isbn = book.isbn;
-          this.author = book.author;
-          this.price = book.price;
-          this.picture = book.picture;
-        } else {
-          this.bookId = null;
-          // Show an error message and navigate back to the main page
-          this.snackBar.open("The book does not exist", 'Close', { duration: 2000 });
-          this.router.navigate([BookFormComponent.BOOKS_PAGE]);
-        }
-      },
-        (error) => console.error(error));
-    }
+    // Load the book data from the local database if a book id is passed
+    if (this.bookId) this.bookOfflineService.fecthSingleItemFromRDb(this.bookId).then((book) => {
+      if (book) {
+        this.title = book.title;
+        this.isbn = book.isbn;
+        this.author = book.author;
+        this.price = book.price;
+        this.picture = book.picture;
+      } else {
+        this.bookId = null;
+        // Show an error message and navigate back to the main page
+        this.snackBar.open("The book does not exist", 'Close', { duration: 2000 });
+        this.router.navigate([BookFormComponent.BOOKS_PAGE]);
+      }
+    },
+      (error) => console.error(error));
   }
 
   handleSave() {
     let message: string;
-    // If the the form input values are invalid, show a snackbar
+    // Validate the form data before saving the data
     if (this.title.trim() === '' || this.isbn.trim() === '' || this.author.trim() === '')
       message = 'Please finish the form.';
     else if (!BookFormComponent.URL_REGEXP.test(this.picture))
@@ -79,20 +61,9 @@ export class BookFormComponent implements OnInit {
     else if (this.price <= 0)
       message = 'Price should be greater than 0.'
     else {
-      // Call the add book API and reset all form input vaules
-      message = 'Operation sccuessful!';
-      // If there is an Internet connection, save the data to MongoDB; otherwise, save to IndexedDB
-      if (this.onlineOfflineService.isOnline) {
-        this.backendService.addOrUpdateBook({
-          title: this.title, isbn: this.isbn, author: this.author,
-          picture: this.picture, price: this.price, _id: this.bookId,
-        }).subscribe(() => {
-          this.clearForm();
-        });
-      } else {
-        // Save data locally
-        this.saveOffline();
-      }
+      message = 'Operation sccuessful';
+      // Save data locally
+      this.saveOffline();
     }
     this.snackBar.open(message, 'Close', { duration: 2000 });
   }
