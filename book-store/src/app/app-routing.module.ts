@@ -14,6 +14,15 @@ const routes: Routes = [
   }, {
     path: 'admin/bookform/:id',
     component: BookFormComponent
+  },
+  {
+    path: '404',
+    component: BooksComponent
+  },
+  // Catch-All (NotFound) Route
+  {
+    path: '**',
+    redirectTo: '404'
   }
 ];
 
