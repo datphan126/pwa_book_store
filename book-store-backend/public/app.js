@@ -24,7 +24,7 @@ var db = mongoose_1.default.connection;
 var app = express_1.default();
 // Helmet helps you secure your Express apps by setting various HTTP headers
 app.use(helmet_1.default());
-// Set the Access-Control-Allow-Origin to http://localhost:4200 to allow our Angular app call the API
+// Set the Access-Control-Allow-Origin to allow our Angular app call the API
 // app.use(cors()); // Allow all CORS requests - For development env only)
 app.use(cors_1.default({ origin: process.env.FRONTEND_ORIGIN }));
 // support parsing of application/json type post data

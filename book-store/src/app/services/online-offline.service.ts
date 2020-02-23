@@ -21,6 +21,7 @@ export class OnlineOfflineService {
     window.addEventListener('offline', () => this.updateOnlineStatus());
   }
 
+  // Send a network status update to the observable's listeners
   private updateOnlineStatus() {
     this.internalConnectionChanged.next(window.navigator.onLine);
   }

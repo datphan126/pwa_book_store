@@ -3,8 +3,10 @@ import Dexie from 'dexie';
 import { Book } from '../books/books.component';
 import { OnlineOfflineService } from './online-offline.service';
 import { v1 as uuidv1 } from 'uuid'; // For generating time-based uuid
-import { BackendService } from '../services/backend.service';
+import { BackendService } from './backend.service';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Subject } from 'rxjs';
+import { take } from 'rxjs/operators';
 
 const BOOK_STATE_CREATED = "CREATED";
 const BOOK_STATE_UPDATED = "UPDATED";
@@ -14,6 +16,7 @@ const BOOK_STATE_DELETED = "DELETED";
 export class BookOfflineService {
     private rDb: any; // this database is for caching data from the MongoDB
     private cudDb: any; // this database is for storing new data, modified data, and deleted data
+    private saveComplete$ = new Subject<string | boolean>();
 
     constructor(
         private onlineOfflineService: OnlineOfflineService,
@@ -56,6 +59,8 @@ export class BookOfflineService {
         // Check if there is an Internet connection
         if (this.onlineOfflineService.isOnline)
             this.sendItemsFromCUDDb();
+        else
+            this.saveComplete$.next(true);
     }
 
     // For saving new items, edited items, and deleted items when no connection is available
@@ -69,8 +74,10 @@ export class BookOfflineService {
                 _id: uuidv1(), title: title, isbn: isbn, author: author,
                 picture: picture, price: price, state: BOOK_STATE_CREATED
             };
-            this.putToCUDDb(book);
-            this.putToRDb(book);
+            await this.putToCUDDb(book);
+            await this.putToRDb(book);
+            // Attempt to sync CUDDB with MongoDB
+            this.syncData();
         } else {
             await this.fecthSingleItemFromRDb(_id).then(async (tmpBook) => {
                 // Item does not exist on the remote server
@@ -81,13 +88,15 @@ export class BookOfflineService {
                             _id: _id, title: title, isbn: isbn, author: author,
                             picture: picture, price: price, state: BOOK_STATE_CREATED
                         };
-                        this.putToCUDDb(book);
-                        this.putToRDb(book);
+                        await this.putToCUDDb(book);
+                        await this.putToRDb(book);
+                        // Attempt to sync CUDDB with MongoDB
+                        this.syncData();
                     }
                     // Delete from local db; item won't be uploaded to remote db
                     else {
-                        this.deleteFromCUDDb(_id)
-                        this.deleteFromRDb(_id);
+                        await this.deleteFromCUDDb(_id)
+                        await this.deleteFromRDb(_id);
                     }
                 }
                 // Item exists on the remote server
@@ -98,8 +107,10 @@ export class BookOfflineService {
                             _id: _id, title: title, isbn: isbn, author: author,
                             picture: picture, price: price, state: BOOK_STATE_UPDATED
                         };
-                        this.putToCUDDb(book);
-                        this.putToRDb(book);
+                        await this.putToCUDDb(book);
+                        await this.putToRDb(book);
+                        // Attempt to sync CUDDB with MongoDB
+                        this.syncData();
                     }
                     // Delete from local db and remote db
                     else {
@@ -107,18 +118,22 @@ export class BookOfflineService {
                             _id: _id, title: title, isbn: isbn, author: author,
                             picture: picture, price: price, state: BOOK_STATE_DELETED
                         };
-                        this.putToCUDDb(book);
-                        this.deleteFromRDb(_id);
+                        await this.putToCUDDb(book);
+                        await this.deleteFromRDb(_id);
+                        // Attempt to sync CUDDB with MongoDB
+                        this.syncData();
                     }
                 }
             }, (error) => console.error(error));
         }
-        // Attempt to sync CUDDB with MongoDB
-        this.syncData();
+    }
+
+    get saveCompleteStatus() {
+        return this.saveComplete$.asObservable();
     }
 
     private putToCUDDb(book: Book) {
-        this.cudDb.books
+        return this.cudDb.books
             .put(book)
             .catch(e => {
                 alert('Error: ' + (e.stack || e));
@@ -126,7 +141,7 @@ export class BookOfflineService {
     }
 
     private deleteFromCUDDb(_id: string) {
-        this.cudDb.books
+        return this.cudDb.books
             .delete(_id)
             .catch(e => {
                 alert('Error: ' + (e.stack || e));
@@ -134,7 +149,7 @@ export class BookOfflineService {
     }
 
     public putToRDb(book: Book) {
-        this.rDb.books
+        return this.rDb.books
             .put(book)
             .catch(e => {
                 alert('Error: ' + (e.stack || e));
@@ -142,7 +157,7 @@ export class BookOfflineService {
     }
 
     public deleteFromRDb(_id: string) {
-        this.rDb.books
+        return this.rDb.books
             .delete(_id)
             .catch(e => {
                 alert('Error: ' + (e.stack || e));
@@ -150,7 +165,7 @@ export class BookOfflineService {
     }
 
     public bulkAddToRDb(books: Array<Book>) {
-        this.rDb.books
+        return this.rDb.books
             .bulkAdd(books)
             .catch(e => {
                 alert('Error: ' + (e.stack || e));
@@ -158,7 +173,7 @@ export class BookOfflineService {
     }
 
     public clearRDb() {
-        this.rDb.books.clear();
+        return this.rDb.books.clear();
     }
 
     public async fecthAllItemsFromRDb() {
@@ -176,19 +191,23 @@ export class BookOfflineService {
     // Failed items will wait for the next database sync.
     private async sendItemsFromCUDDb() {
         const books: Book[] = await this.cudDb.books.toArray();
-        books.forEach(async (book: Book) => {
+        await Promise.all(books.map(async (book: Book) => {
             // Create new book in MongoDB
             if (book.state === BOOK_STATE_CREATED) {
                 await this.backendService.addOrUpdateBook({
                     title: book.title, isbn: book.isbn, author: book.author,
                     picture: book.picture, price: book.price, _id: null
-                }).subscribe(res => {
+                }).pipe(take(1)).toPromise().then(res => {
                     // Delete the item locally only if the sync was successfull
                     if (res.status == 200) {
                         this.deleteFromCUDDb(book._id);
                     } else {
                         console.log(res); // Log error
                     }
+                    // Save complete
+                    // Needs to return true instead of a bookID
+                    // since the listener doesn't know the bookID
+                    this.saveComplete$.next(true);
                 });
             }
             // Update a book in MongoDB
@@ -196,26 +215,31 @@ export class BookOfflineService {
                 await this.backendService.addOrUpdateBook({
                     title: book.title, isbn: book.isbn, author: book.author,
                     picture: book.picture, price: book.price, _id: book._id
-                }).subscribe(res => {
+                }).pipe(take(1)).toPromise().then(res => {
                     // Delete the item locally only if the sync was successfull
                     if (res.status == 200) {
                         this.deleteFromCUDDb(book._id);
                     } else {
                         console.log(res); // Log error
                     }
+                    // Save complete
+                    this.saveComplete$.next(book._id);
                 });
             }
             // Delete a book in MongoDB
             else {
-                await this.backendService.deleteBook(book._id).subscribe(res => {
-                    // Delete the item locally only if the sync was successfull
-                    if (res.status == 200) {
-                        this.deleteFromCUDDb(book._id);
-                    } else {
-                        console.log(res); // Log error
-                    }
-                });
+                await this.backendService.deleteBook(book._id)
+                    .pipe(take(1)).toPromise().then(res => {
+                        // Delete the item locally only if the sync was successfull
+                        if (res.status == 200) {
+                            this.deleteFromCUDDb(book._id);
+                        } else {
+                            console.log(res); // Log error
+                        }
+                        // Save complete
+                        this.saveComplete$.next(book._id);
+                    });
             }
-        });
+        }));
     }
 }

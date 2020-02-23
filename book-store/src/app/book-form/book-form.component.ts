@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { BackendService } from '../services/backend.service';
 import { BookOfflineService } from '../services/book-offline.service';
+import { filter, takeUntil } from 'rxjs/operators';
+import { ReplaySubject } from 'rxjs';
 import { OnlineOfflineService } from '../services/online-offline.service';
+import { BackendService } from '../services/backend.service';
 import { Book } from '../books/books.component';
 
 @Component({
@@ -12,6 +14,7 @@ import { Book } from '../books/books.component';
   styleUrls: ['./book-form.component.css']
 })
 export class BookFormComponent implements OnInit {
+  private destroyed$: ReplaySubject<boolean> = new ReplaySubject();
   public bookId: string;
   public title: string = '';
   public isbn: string = '';
@@ -25,30 +28,55 @@ export class BookFormComponent implements OnInit {
     private route: ActivatedRoute,
     private router: Router,
     private snackBar: MatSnackBar,
-    private backendService: BackendService,
     private bookOfflineService: BookOfflineService,
     private onlineOfflineService: OnlineOfflineService,
+    private backendService: BackendService
   ) { }
 
   ngOnInit() {
     // Get the url pramater
     this.bookId = this.route.snapshot.paramMap.get('id');
-    // Load the book data from the local database if a book id is passed
-    if (this.bookId) this.bookOfflineService.fecthSingleItemFromRDb(this.bookId).then((book) => {
-      if (book) {
-        this.title = book.title;
-        this.isbn = book.isbn;
-        this.author = book.author;
-        this.price = book.price;
-        this.picture = book.picture;
-      } else {
-        this.bookId = null;
-        // Show an error message and navigate back to the main page
-        this.snackBar.open("The book does not exist", 'Close', { duration: 2000 });
-        this.router.navigate([BookFormComponent.BOOKS_PAGE]);
-      }
-    },
-      (error) => console.error(error));
+    if (this.onlineOfflineService.isOnline) {
+      if (this.bookId) this.backendService.fetchBook(this.bookId)
+        .pipe(takeUntil(this.destroyed$)).subscribe((data: Book[]) => {
+          // Book exists
+          if (data.length !== 0) {
+            this.title = data[0].title;
+            this.isbn = data[0].isbn;
+            this.author = data[0].author;
+            this.price = data[0].price;
+            this.picture = data[0].picture;
+          } else {
+            this.bookId = null;
+            // Show an error message and navigate back to the main page
+            this.snackBar.open("The book does not exist", 'Close', { duration: 2000 });
+            this.router.navigate([BookFormComponent.BOOKS_PAGE]);
+          }
+        });
+    } else {
+      // Load the book data from the local database if a book id is passed
+      if (this.bookId) this.bookOfflineService.fecthSingleItemFromRDb(this.bookId).then((book) => {
+        if (book) {
+          this.title = book.title;
+          this.isbn = book.isbn;
+          this.author = book.author;
+          this.price = book.price;
+          this.picture = book.picture;
+        } else {
+          this.bookId = null;
+          // Show an error message and navigate back to the main page
+          this.snackBar.open("The book does not exist", 'Close', { duration: 2000 });
+          this.router.navigate([BookFormComponent.BOOKS_PAGE]);
+        }
+      },
+        (error) => console.error(error));
+    }
+  }
+
+  ngOnDestroy() {
+    // Need to tell listeners to stop subscribing to avoid memory leaks
+    this.destroyed$.next(true);
+    this.destroyed$.complete();
   }
 
   handleSave() {
@@ -63,15 +91,25 @@ export class BookFormComponent implements OnInit {
     else {
       message = 'Operation sccuessful';
       // Save data locally
-      this.saveOffline();
+      try {
+        this.saveOffline();
+      } catch (err) {
+        console.error(err);
+      }
     }
     this.snackBar.open(message, 'Close', { duration: 2000 });
   }
 
   async saveOffline() {
+    // Only clear form and navigate to the main page when the change has been saved and/or synced
+    this.bookOfflineService.saveCompleteStatus
+      .pipe(filter(value => value == this.bookId || value == true), takeUntil(this.destroyed$))
+      .subscribe(() => {
+        this.clearForm();
+      });
+    // Save the change to the CUDBooks instance and try to sync the instance with the remote server
     await this.bookOfflineService.saveOffline(
       this.title, this.isbn, this.author, this.picture, this.price, this.bookId, false);
-    this.clearForm();
   }
 
   clearForm() {

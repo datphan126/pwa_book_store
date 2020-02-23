@@ -9,8 +9,6 @@ import { OnlineOfflineService } from './services/online-offline.service';
 export class AppComponent {
   title = 'book-store';
   isOnline: boolean = true;
-  deferredPrompt: any;
-  showButton = false;
 
   constructor(
     private onlineOfflineService: OnlineOfflineService
