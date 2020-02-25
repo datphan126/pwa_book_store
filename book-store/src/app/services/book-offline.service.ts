@@ -60,6 +60,7 @@ export class BookOfflineService {
         if (this.onlineOfflineService.isOnline)
             this.sendItemsFromCUDDb();
         else
+            // Notify listeners that the save process has been complete
             this.saveComplete$.next(true);
     }
 
@@ -206,7 +207,8 @@ export class BookOfflineService {
                     }
                     // Save complete
                     // Needs to return true instead of a bookID
-                    // since the listener doesn't know the bookID
+                    // since listeners of newly created book doesn't
+                    // know the bookID
                     this.saveComplete$.next(true);
                 });
             }

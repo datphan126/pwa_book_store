@@ -37,6 +37,7 @@ export class BookFormComponent implements OnInit {
     // Get the url pramater
     this.bookId = this.route.snapshot.paramMap.get('id');
     if (this.onlineOfflineService.isOnline) {
+      // Load the book data from the local database if a book id is passed
       if (this.bookId) this.backendService.fetchBook(this.bookId)
         .pipe(takeUntil(this.destroyed$)).subscribe((data: Book[]) => {
           // Book exists
