@@ -36,7 +36,9 @@ export class BookOfflineService {
             if (online) {
                 this.snackBar.open("You are back online", 'Close', { duration: 2000 });
                 // Sync the CUDDB to the remote server when the server is back online
-                this.sendItemsFromCUDDb();
+                // Wait for some time for the internet connection to become stable
+                let that = this; //pass the this reference to the callback function below
+                setTimeout(() => that.sendItemsFromCUDDb(), 5000);
             } else {
                 this.snackBar.open("You are working offline", 'Close', { duration: 2000 });
             }
