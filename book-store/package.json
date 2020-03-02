@@ -5,7 +5,7 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "buildGHP": "ng build --prod&&node fix-sw.js&&gh-pages -d dist/book-store -b master -r \"https://github.com/datphan126/datphan126.github.io.git\"",
+    "buildGHP": "ng build --prod&&gh-pages -d dist/book-store -b master -r \"https://github.com/datphan126/datphan126.github.io.git\"",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e"
