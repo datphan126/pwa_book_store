@@ -7,4 +7,4 @@ The purpose of this project is to enable PWA features, such as offline capabilit
 The frontend app is being hosted on GitHub Pages while the backend app is hosted on an AWS EC2 instance. The database used in this project is MongoDB Atlas.
 
 Demo Link:
-https://datphan126.github.io/pwa_book_store/
+https://datphan126.github.io/
