@@ -1,6 +1,6 @@
 export const environment = {
   production: true,
-  backendHost: "pwa-book-store.online",
-  backendPort: "8443",
+  backendHost: "pwa-book-store.online/secret_app",
+  backendPort: "5555",
   backendProtocol: "https://"
 };
